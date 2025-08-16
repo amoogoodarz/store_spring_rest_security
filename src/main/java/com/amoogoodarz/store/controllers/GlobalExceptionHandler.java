@@ -1,6 +1,8 @@
 package com.amoogoodarz.store.controllers;
 
+import com.amoogoodarz.store.dtos.exceptions.ErrorDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,6 +22,13 @@ public class GlobalExceptionHandler {
             errors.put(fieldError.getField(), fieldError.getDefaultMessage());
         });
         return  ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorDto> handleUnreadableMessage(){
+        return  ResponseEntity.badRequest().body(
+                new ErrorDto("invalid request body")
+        );
     }
 
 }
